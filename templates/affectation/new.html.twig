@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Affectation{% endblock %}
+
+{% block body %}
+    <h1>Create New Affectation</h1>
+
+    {{ include('affectation/_form.html.twig') }}
+
+    <div class="mt-3">
+        <a href="{{ path('app_affectation_index') }}" class="btn btn-secondary">Back to list</a>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let dateDebut = document.getElementById("{{ form.date_debut.vars.id }}");
+        let dateFin = document.getElementById("{{ form.date_fin.vars.id }}");
+
+        if (dateDebut && dateFin) {
+            // When date_fin is changed, update the max value for date_debut
+            dateFin.addEventListener("change", function () {
+                dateDebut.setAttribute("max", dateFin.value);
+            });
+
+            // Check that the start date is not after the end date
+            dateDebut.addEventListener("change", function () {
+                if (dateDebut.value && dateFin.value && dateDebut.value > dateFin.value) {
+                    alert("La date de début ne peut pas être après la date de fin !");
+                    dateDebut.value = "";
+                }
+            });
+        }
+    });
+    </script>
+{% endblock %}

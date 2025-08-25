@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_ouvrier_delete', {'id': ouvrier.id}) }}" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer cet ouvrier ?');">
+    <input type="hidden" name="_token" value="{{ ('delete' ~ ouvrier.id) }}">
+    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+</form>

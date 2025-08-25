@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Compétences{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-tools"></i> Gestion des Compétences</h1>
+                <div>
+                    <a href="{{ path('app_competences_new') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Nouvelle Compétence
+                    </a>
+                    <a href="{{ path('app_competences_search') }}" class="btn btn-info">
+                        <i class="fas fa-search"></i> Rechercher
+                    </a>
+                </div>
+            </div>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+
+            <!-- Statistiques rapides -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5>{{ users|length }}</h5>
+                            <p class="mb-0">Utilisateurs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5>{{ competences|length }}</h5>
+                            <p class="mb-0">Compétences disponibles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des utilisateurs -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-users"></i> Utilisateurs et leurs Compétences</h5>
+                </div>
+                <div class="card-body">
+                    {% if users|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Rôle</th>
+                                        <th>Équipe</th>
+                                        <th>Compétences</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ user.nomOuvrier }}</strong>
+                                            </td>
+                                            <td>{{ user.email }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ user.roleOuvrier == 'Chef' ? 'warning' : 'info' }}">
+                                                    {{ user.roleOuvrier }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if user.equipe %}
+                                                    {{ user.equipe.nomEquipe }}
+                                                {% else %}
+                                                    <span class="text-muted">Aucune équipe</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% set userCompetenceCount = 0 %}
+                                                {% for uc in user.userCompetences %}
+                                                    {% set userCompetenceCount = userCompetenceCount + 1 %}
+                                                    <span class="badge bg-{{ uc.niveauColor }} me-1">
+                                                        {{ uc.competence.nom }} ({{ uc.niveauLabel }})
+                                                    </span>
+                                                {% endfor %}
+                                                
+                                                {% if userCompetenceCount == 0 %}
+                                                    <span class="text-muted">Aucune compétence</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{{ path('app_competences_user', {id: user.id}) }}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-edit"></i> Gérer
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Aucun utilisateur trouvé</h5>
+                            <p class="text-muted">Il n'y a pas d'utilisateurs (ouvriers/chefs) dans le système.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Liste des compétences disponibles -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Compétences Disponibles</h5>
+                </div>
+                <div class="card-body">
+                    {% if competences|length > 0 %}
+                        <div class="row">
+                            {% for competence in competences %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ competence.nom }}</h6>
+                                            {% if competence.description %}
+                                                <p class="card-text small text-muted">{{ competence.description }}</p>
+                                            {% endif %}
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    {{ competence.userCompetences|length }} utilisateur(s)
+                                                </small>
+                                                <span class="badge bg-{{ competence.actif ? 'success' : 'secondary' }}">
+                                                    {{ competence.actif ? 'Actif' : 'Inactif' }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-tools fa-2x text-muted mb-3"></i>
+                            <h6 class="text-muted">Aucune compétence disponible</h6>
+                            <a href="{{ path('app_competences_new') }}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Créer la première compétence
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Équipe{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Détails de l'Équipe</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Nom de l'équipe</th>
+                            <td>{{ equipe.nomEquipe }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Compétences de l'équipe</th>
+                            <td>
+                                {{ equipe.competanceEquipe is iterable ? equipe.competanceEquipe|join(', ') : equipe.competanceEquipe }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">Nombre d'ouvriers</th>
+                            <td>{{ equipe.nombre }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Chef d'équipe</th>
+                            <td>{{ equipe.chefEquipe ? equipe.chefEquipe.nomOuvrier : 'Aucun' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Liste des ouvriers associés à cette équipe -->
+                <h4>Ouvriers de l'Équipe</h4>
+                <table class="table table-bordered mt-3">
+                    <thead>
+                        <tr>
+                            <th>Nom de l'ouvrier</th>
+                            <th>Compétence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ouvrier in equipe.ouvriers %}
+                            {% if ouvrier.role == 'Ouvrier' %}
+                                <tr>
+                                    <td>{{ ouvrier.nomOuvrier }}</td>
+                                    <td>{{ ouvrier.competences[0] is defined ? ouvrier.competences[0] : 'Aucune compétence' }}</td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center">Aucun ouvrier associé à cette équipe</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_equipe_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                    <a href="{{ path('app_equipe_edit', {'id': equipe.id}) }}" class="btn btn-primary">Éditer</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            {{ include('equipe/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

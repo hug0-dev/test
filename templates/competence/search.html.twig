@@ -1,0 +1,280 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche par Compétences{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-search"></i> Recherche par Compétences</h1>
+                <a href="{{ path('app_competences_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+
+            <!-- Formulaire de recherche -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-filter"></i> Filtres de Recherche</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="{{ path('app_competences_search') }}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="competence" class="form-label">Compétence</label>
+                                <select class="form-select" name="competence" id="competence">
+                                    <option value="">Toutes les compétences</option>
+                                    {% for comp in competences %}
+                                        <option value="{{ comp.id }}" 
+                                                {% if competence_selectionnee and competence_selectionnee.id == comp.id %}selected{% endif %}>
+                                            {{ comp.nom }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="niveau" class="form-label">Niveau</label>
+                                <select class="form-select" name="niveau" id="niveau">
+                                    <option value="">Tous les niveaux</option>
+                                    {% for value, label in niveaux %}
+                                        <option value="{{ value }}" {% if niveau_selectionne == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i> Rechercher
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Résultats -->
+            {% if competence_selectionnee or niveau_selectionne %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list-ul"></i> Résultats de la Recherche
+                            {% if resultats|length > 0 %}
+                                <span class="badge bg-primary">{{ resultats|length }} résultat(s)</span>
+                            {% endif %}
+                        </h5>
+                        {% if competence_selectionnee or niveau_selectionne %}
+                            <small class="text-muted">
+                                Critères: 
+                                {% if competence_selectionnee %}
+                                    Compétence "{{ competence_selectionnee.nom }}"
+                                {% endif %}
+                                {% if niveau_selectionne %}
+                                    {% if competence_selectionnee %} - {% endif %}
+                                    Niveau "{{ niveaux[niveau_selectionne] }}"
+                                {% endif %}
+                            </small>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {% if resultats|length > 0 %}
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Utilisateur</th>
+                                            <th>Email</th>
+                                            <th>Rôle</th>
+                                            <th>Équipe</th>
+                                            <th>Compétence</th>
+                                            <th>Niveau</th>
+                                            <th>Attribuée le</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for uc in resultats %}
+                                            <tr>
+                                                <td>
+                                                    <strong>{{ uc.user.nomOuvrier }}</strong>
+                                                </td>
+                                                <td>{{ uc.user.email }}</td>
+                                                <td>
+                                                    <span class="badge bg-{{ uc.user.roleOuvrier == 'Chef' ? 'warning' : 'info' }}">
+                                                        {{ uc.user.roleOuvrier }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {% if uc.user.equipe %}
+                                                        {{ uc.user.equipe.nomEquipe }}
+                                                    {% else %}
+                                                        <span class="text-muted">Aucune équipe</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <strong>{{ uc.competence.nom }}</strong>
+                                                    {% if uc.competence.description %}
+                                                        <br><small class="text-muted">{{ uc.competence.description }}</small>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-{{ uc.niveauColor }} fs-6">
+                                                        {{ uc.niveauLabel }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <small>{{ uc.dateAttribution|date('d/m/Y') }}</small>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ path('app_competences_user', {id: uc.user.id}) }}" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-edit"></i> Gérer
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">Aucun résultat trouvé</h5>
+                                <p class="text-muted">
+                                    Aucun utilisateur ne correspond aux critères de recherche.
+                                </p>
+                                <div class="mt-3">
+                                    <a href="{{ path('app_competences_search') }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-redo"></i> Nouvelle recherche
+                                    </a>
+                                    <a href="{{ path('app_competences_index') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-list"></i> Voir tous les utilisateurs
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <!-- État initial - Pas de recherche -->
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                        <h4 class="text-muted mb-3">Recherche par Compétences</h4>
+                        <p class="text-muted mb-4">
+                            Utilisez les filtres ci-dessus pour rechercher des utilisateurs selon leurs compétences et niveaux.
+                        </p>
+                        
+                        <!-- Suggestions de recherches rapides -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <h6 class="text-muted mb-3">Recherches rapides :</h6>
+                                <div class="d-flex flex-wrap justify-content-center gap-2">
+                                    {% for competence in competences|slice(0, 6) %}
+                                        <a href="{{ path('app_competences_search', {competence: competence.id}) }}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            {{ competence.nom }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <h6 class="text-muted mb-2">Par niveau :</h6>
+                                    {% for value, label in niveaux %}
+                                        <a href="{{ path('app_competences_search', {niveau: value}) }}" 
+                                           class="btn btn-outline-secondary btn-sm me-2">
+                                            {{ label }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Statistiques rapides -->
+            {% if competences|length > 0 %}
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-chart-bar"></i> Statistiques des Compétences</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    {% for competence in competences|slice(0, 6) %}
+                                        <div class="col-md-4 col-sm-6 mb-3">
+                                            <div class="border rounded p-3 h-100">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <h6 class="mb-0">{{ competence.nom }}</h6>
+                                                    <span class="badge bg-primary">
+                                                        {{ competence.userCompetences|length }}
+                                                    </span>
+                                                </div>
+                                                {% if competence.userCompetences|length > 0 %}
+                                                    <div class="mt-2">
+                                                        {% set debutants = 0 %}
+                                                        {% set confirmes = 0 %}
+                                                        {% set experts = 0 %}
+                                                        
+                                                        {% for uc in competence.userCompetences %}
+                                                            {% if uc.niveau == 'DEBUTANT' %}
+                                                                {% set debutants = debutants + 1 %}
+                                                            {% elseif uc.niveau == 'CONFIRME' %}
+                                                                {% set confirmes = confirmes + 1 %}
+                                                            {% elseif uc.niveau == 'EXPERT' %}
+                                                                {% set experts = experts + 1 %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        
+                                                        <small>
+                                                            {% if experts > 0 %}<span class="badge bg-success">{{ experts }} Expert(s)</span> {% endif %}
+                                                            {% if confirmes > 0 %}<span class="badge bg-info">{{ confirmes }} Confirmé(s)</span> {% endif %}
+                                                            {% if debutants > 0 %}<span class="badge bg-warning">{{ debutants }} Débutant(s)</span>{% endif %}
+                                                        </small>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <a href="{{ path('app_competences_search', {competence: competence.id}) }}" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            Voir les utilisateurs
+                                                        </a>
+                                                    </div>
+                                                {% else %}
+                                                    <small class="text-muted">Aucun utilisateur</small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                
+                                {% if competences|length > 6 %}
+                                    <div class="text-center mt-3">
+                                        <p class="text-muted">Et {{ competences|length - 6 }} autres compétences...</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-submit du formulaire quand on change les sélections
+document.addEventListener('DOMContentLoaded', function() {
+    const competenceSelect = document.getElementById('competence');
+    const niveauSelect = document.getElementById('niveau');
+    
+    // Optionnel : auto-submit quand on change une sélection
+    // competenceSelect.addEventListener('change', function() {
+    //     if (this.value) {
+    //         document.querySelector('form').submit();
+    //     }
+    // });
+});
+</script>
+{% endblock %}

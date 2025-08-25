@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Compétence{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-plus-circle"></i> Nouvelle Compétence</h1>
+                <a href="{{ path('app_competences_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-tools"></i> Créer une Nouvelle Compétence</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">
+                                Nom de la compétence <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="nom" 
+                                   name="nom" 
+                                   value="{{ app.request.get('nom') }}"
+                                   placeholder="Ex: Maçon, Électricien, Plombier..." 
+                                   required>
+                            <div class="form-text">
+                                Nom unique de la compétence (ex: Maçon, Terrassier, Électricien...)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" 
+                                      id="description" 
+                                      name="description" 
+                                      rows="3" 
+                                      placeholder="Description optionnelle de la compétence...">{{ app.request.get('description') }}</textarea>
+                            <div class="form-text">
+                                Description détaillée de la compétence (optionnel)
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save"></i> Créer la Compétence
+                                </button>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <a href="{{ path('app_competences_index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Annuler
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Exemples de compétences -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-lightbulb"></i> Exemples de Compétences BTP</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Gros Œuvre</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-hammer text-muted"></i> Maçon</li>
+                                <li><i class="fas fa-hammer text-muted"></i> Terrassier</li>
+                                <li><i class="fas fa-hammer text-muted"></i> Coffreur</li>
+                                <li><i class="fas fa-hammer text-muted"></i> Ferrailleur</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Second Œuvre</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-tools text-muted"></i> Électricien</li>
+                                <li><i class="fas fa-tools text-muted"></i> Plombier</li>
+                                <li><i class="fas fa-tools text-muted"></i> Carreleur</li>
+                                <li><i class="fas fa-tools text-muted"></i> Peintre</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Charpente & Couverture</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-tree text-muted"></i> Charpentier</li>
+                                <li><i class="fas fa-tree text-muted"></i> Couvreur</li>
+                                <li><i class="fas fa-tree text-muted"></i> Zingueur</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Engins & Conduite</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-truck text-muted"></i> Conducteur d'Engins</li>
+                                <li><i class="fas fa-truck text-muted"></i> Grutier</li>
+                                <li><i class="fas fa-truck text-muted"></i> Chauffeur PL</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

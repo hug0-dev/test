@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Test CSRF{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1>Test CSRF</h1>
+
+    <form method="POST" action="{{ path('app_csrf_test_submit') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        
+        <div>
+            <label for="data">Entrez une donnée :</label>
+            <input type="text" id="data" name="data" placeholder="Tapez quelque chose">
+        </div>
+
+        <button type="submit">Envoyer</button>
+    </form>
+</div>
+{% endblock %}

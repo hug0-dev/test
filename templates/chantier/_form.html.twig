@@ -1,0 +1,67 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation d-flex flex-column', 'novalidate': 'novalidate', 'style': 'min-height: 80vh;'}}) }}
+    <div class="mb-3">
+        {{ form_label(form.nom, 'Nom du Chantier') }}
+        {{ form_widget(form.nom, {
+            'attr': {'class': 'form-control', 'placeholder': 'Ex: Construction immeuble'}
+        }) }}
+        {{ form_errors(form.nom) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.effectif_requis, 'Effectif Requis') }}
+        {{ form_widget(form.effectif_requis, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.effectif_requis) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.date_debut, 'Date de Début') }}
+        {{ form_widget(form.date_debut, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.date_debut) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.date_fin, 'Date de Fin') }}
+        {{ form_widget(form.date_fin, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.date_fin) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.chantier_prerequis, 'Compétences Prérequis') }}
+        <div class="row">
+            {% set count = 0 %}
+            {% for choice in form.chantier_prerequis %}
+                {% if count % 4 == 0 and count > 0 %}
+                    </div><div class="row">
+                {% endif %}
+                <div class="col-md-3 mb-2">
+                    <div class="form-check">
+                        {{ form_widget(choice, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(choice, null, {'attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                </div>
+                {% set count = count + 1 %}
+            {% endfor %}
+        </div>
+        {{ form_errors(form.chantier_prerequis) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.chef_chantier, 'Chef de Chantier') }}
+        {{ form_widget(form.chef_chantier, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.chef_chantier) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.imageFile, 'Image du Chantier') }}
+        {{ form_widget(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.imageFile) }}
+    </div>
+
+    <!-- Ajout du bouton à la fin avec la classe mt-auto pour le pousser en bas -->
+    <div class="mt-auto">
+        <button type="submit" class="btn btn-success w-100">
+            <i class="fas fa-save"></i> {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+
+{{ form_end(form) }}

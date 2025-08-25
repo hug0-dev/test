@@ -1,0 +1,41 @@
+# 📦 Dépendances Composer (vendor)
+vendor/
+
+# ⚙️ Fichiers de configuration locale et caches Symfony
+.env
+.env.local
+.env.*.local
+.phpunit.result.cache
+var/
+var/cache/
+var/logs/
+var/sessions/
+
+# 🔥 Cache et logs PHPStorm / IDE
+.idea/
+*.iml
+.vscode/
+
+# 📦 Dépendances Node.js et fichiers front-end compilés
+node_modules/
+public/build/
+public/bundles/
+npm-debug.log
+yarn-error.log
+.pnp
+.pnp.js
+
+# 🔍 Fichiers de test et couverture de code
+coverage/
+tests/bootstrap.php
+phpunit.xml
+phpunit.xml.dist
+
+# 🗂️ Migrations générées (optionnel, si tu veux versionner les migrations, ne pas ignorer ce dossier)
+migrations/
+
+# 📑 Fichiers de logs et de déploiement
+*.log
+*.lock
+.DS_Store
+Thumbs.db

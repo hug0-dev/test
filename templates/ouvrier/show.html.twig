@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Ouvrier{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="my-4 text-center text-primary">Détails de l'Ouvrier</h1>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ ouvrier.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nom de l'Ouvrier</th>
+                            <td>{{ ouvrier.nomOuvrier }}</td>
+                        </tr>
+                        <tr>
+                            <th>Compétence</th>
+                            <td>
+                                {% for competence in ouvrier.competences %}
+                                    <span class="badge bg-info text-dark">{{ competence }}</span>{% if not loop.last %}, {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary">Aucune compétence</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Rôle</th>
+                            <td>{{ ouvrier.role }}</td>
+                        </tr>
+                        <tr>
+                            <th>Équipe</th>
+                            <td>{{ ouvrier.equipe.nom ?? 'Aucune équipe' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_competences_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                    <a href="{{ path('app_ouvrier_edit', {'id': ouvrier.id}) }}" class="btn btn-warning">Modifier</a>
+                </div>
+
+                {{ include('ouvrier/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

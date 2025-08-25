@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Chantier{% endblock %}
+
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">🏗️ Ajouter un Nouveau Chantier</h2>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            {{ include('chantier/_form.html.twig')}}
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_chantier_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+    </div>
+</div>
+
+    {% block javascripts %}
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let dateDebut = document.getElementById("{{ form.date_debut.vars.id }}");
+            let dateFin = document.getElementById("{{ form.date_fin.vars.id }}");
+
+            if (dateDebut && dateFin) {
+                // When date_fin is changed, update the max value for date_debut
+                dateFin.addEventListener("change", function () {
+                    dateDebut.setAttribute("max", dateFin.value);
+                });
+
+                // Check that the start date is not after the end date
+                dateDebut.addEventListener("change", function () {
+                    if (dateDebut.value && dateFin.value && dateDebut.value > dateFin.value) {
+                        alert("La date de début ne peut pas être après la date de fin !");
+                        dateDebut.value = "";
+                    }
+                });
+            }
+        });
+        </script>
+    {% endblock %}
+{% endblock %}

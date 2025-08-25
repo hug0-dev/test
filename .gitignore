@@ -1,0 +1,65 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+# Ignore les fichiers générés par le système
+.DS_Store
+Thumbs.db
+
+# Ignore le répertoire vendor (installé avec Composer)
+vendor/
+
+# Ignore le cache et les logs Symfony
+var/cache/
+var/log/
+
+# Ignore les fichiers de configuration sensibles
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Ignore les fichiers générés par Composer
+/composer.phar
+
+# Ignore les fichiers générés par PHPStorm
+.idea/
+
+# Ignore les fichiers de dépendances Node.js (si applicable)
+node_modules/
+
+# Ignore les fichiers de test coverage (si applicable)
+coverage/
+
+# Ignore les fichiers générés par Docker
+docker-compose.override.yaml
+=======
+ .env
+        var/
+        vendor/
+>>>>>>> Yanis
+=======
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
+>>>>>>> hugo

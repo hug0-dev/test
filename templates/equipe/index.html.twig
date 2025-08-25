@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des équipes{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Liste des équipes</h1>
+
+        <div class="mb-3">
+            <a href="{{ path('app_equipe_new') }}" class="btn btn-primary">Créer une nouvelle équipe</a>
+        </div>
+
+        <div class="row">
+            {% for equipe in equipes %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ equipe.nomEquipe }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Compétence : {{ equipe.competanceEquipe|join(', ') }}</h6>
+                            <p class="card-text"><strong>Membres :</strong> {{ equipe.nombre }}</p>
+                            <p class="card-text">
+                                <strong>Chef :</strong> {{ equipe.chefEquipe ? equipe.chefEquipe.nomOuvrier : 'Aucun' }}
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('app_equipe_show', {'id': equipe.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                                <a href="{{ path('app_equipe_edit', {'id': equipe.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Aucune équipe trouvée</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

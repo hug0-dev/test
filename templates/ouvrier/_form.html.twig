@@ -1,0 +1,35 @@
+{{ form_start(form) }}
+
+    <!-- Nom de l'Ouvrier -->
+    <div class="form-group mb-4">
+        {{ form_label(form.nom_ouvrier) }}
+        {{ form_widget(form.nom_ouvrier, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom de l\'ouvrier'}}) }}
+    </div>
+
+    <!-- Compétences avec cases à cocher -->
+    <div class="mb-4">
+        {{ form_label(form.competences) }}
+        <div class="row">
+            {% for competence in form.competences %}
+                <div class="col-md-4 mb-3">
+                    <div class="form-check">
+                        {{ form_widget(competence, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(competence, null, {'attr': {'class': 'form-check-label'}}) }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Rôle -->
+    <div class="form-group mb-4">
+        {{ form_label(form.role) }}
+        {{ form_widget(form.role, {'attr': {'class': 'form-select'}}) }}
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary w-100">{{ button_label|default('Sauvegarder') }}</button>
+    </div>
+
+{{ form_end(form) }}

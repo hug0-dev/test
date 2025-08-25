@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Affectation des équipes{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+    <h2 class="text-center mb-4">Affectation</h2>
+
+    <div class="card shadow-lg border-0">
+        {% if affectation.chantier.image %}
+            <img src="{{ asset('uploads/images/' ~ affectation.chantier.image) }}" class="card-img-top" alt="Image du Chantier">
+        {% else %}
+            <img src="{{ asset('uploads/images/default-placeholder.png') }}" class="card-img-top" alt="Pas d'image">
+        {% endif %}
+        <div class="card-body">
+            <h4 class="card-title text-primary">{{ affectation.nom }}</h4>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Equipe :</strong> {{ affectation.equipe.nomEquipe }}</li>
+                <li class="list-group-item"><strong>Chantier :</strong> {{ affectation.chantier.nom}}</li>
+                <li class="list-group-item"><strong>Date de Début :</strong> {{ affectation.dateDebut ? affectation.dateDebut|date('d/m/Y') : '-' }}</li>
+                <li class="list-group-item"><strong>Date de Fin :</strong> {{ affectation.dateFin ? affectation.dateFin|date('d/m/Y') : '-' }}</li>
+            </ul>
+        </div>
+    </div>
+
+        <div class="mt-4 text-center">
+        <a href="{{ path('app_affectation_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+        <a href="{{ path('app_affectation_edit', {'id': affectation.id}) }}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Modifier
+        </a>
+        {{ include('affectation/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

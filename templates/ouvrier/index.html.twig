@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Ouvriers{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="my-4 text-primary">Liste des Ouvriers</h1>
+
+        <a href="{{ path('app_ouvrier_new') }}" class="btn btn-primary mb-3">Créer un Nouvel Ouvrier</a>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nom de l'Ouvrier</th>
+                        <th>Compétence</th>
+                        <th>Rôle</th>
+                        <th>Equipe</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ouvrier in ouvriers %}
+                        <tr>
+                            <td>{{ ouvrier.nomOuvrier }}</td>
+                            <td>
+                                {% for competence in ouvrier.competences %}
+                                    <span class="badge bg-info text-dark">{{ competence }}</span>{% if not loop.last %}, {% endif %}
+                                {% else %}
+                                    Aucune compétence
+                                {% endfor %}
+                            </td>
+                            <td>{{ ouvrier.role }}</td>
+                            <td>{{ ouvrier.equipe.nom ?? 'Aucune équipe' }}</td>
+                            <td>
+                                <a href="{{ path('app_ouvrier_show', {'id': ouvrier.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                                <a href="{{ path('app_ouvrier_edit', {'id': ouvrier.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                <form method="post" action="{{ path('app_ouvrier_delete', {'id': ouvrier.id}) }}" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer cet ouvrier ?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Aucun ouvrier trouvé</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

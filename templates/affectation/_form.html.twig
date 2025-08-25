@@ -1,0 +1,42 @@
+{{ form_start(form) }}
+    <div class="mb-4">
+        {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-4">
+        {{ form_label(form.date_debut, 'Date de début', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date_debut, {'attr': {'class': 'form-control', 'placeholder': 'Sélectionner la date de début'}}) }}
+    </div>
+
+    <div class="mb-4">
+        {{ form_label(form.date_fin, 'Date de fin', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date_fin, {'attr': {'class': 'form-control', 'placeholder': 'Sélectionner la date de fin'}}) }}
+    </div>
+
+    <div class="mb-4">
+        {{ form_row(form.chantier, {'attr': {'class': 'form-select'}}) }}
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h5 class="mb-3">Équipes assignées</h5>
+        </div>
+        {% for equipe in form.equipe %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-light">
+                    <div class="card-body">
+                        <label class="form-check-label">
+                            {{ form_widget(equipe, {'attr': {'class': 'form-check-input'}}) }}
+                            <strong>{{ equipe.vars.label }}</strong>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end">
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+
+{{ form_end(form) }}

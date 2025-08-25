@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Compétences de {{ user.nomOuvrier }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1><i class="fas fa-user-cog"></i> Compétences de {{ user.nomOuvrier }}</h1>
+                    <p class="text-muted mb-0">{{ user.email }} - {{ user.roleOuvrier }}</p>
+                </div>
+                <a href="{{ path('app_competences_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+
+            <div class="row">
+                <!-- Compétences actuelles -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-check-circle"></i> Compétences Actuelles</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if userCompetences|length > 0 %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Compétence</th>
+                                                <th>Niveau</th>
+                                                <th>Attribuée le</th>
+                                                <th>Par</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for uc in userCompetences %}
+                                                <tr>
+                                                    <td>
+                                                        <strong>{{ uc.competence.nom }}</strong>
+                                                        {% if uc.competence.description %}
+                                                            <br><small class="text-muted">{{ uc.competence.description }}</small>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-{{ uc.niveauColor }} fs-6">
+                                                            {{ uc.niveauLabel }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <small>{{ uc.dateAttribution|date('d/m/Y H:i') }}</small>
+                                                    </td>
+                                                    <td>
+                                                        {% if uc.attribueePar %}
+                                                            <small>{{ uc.attribueePar.nomOuvrier ?? uc.attribueePar.email }}</small>
+                                                        {% else %}
+                                                            <small class="text-muted">N/A</small>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <form method="post" action="{{ path('app_competences_remove', {id: uc.id}) }}" 
+                                                              style="display: inline-block;"
+                                                              onsubmit="return confirm('Êtes-vous sûr de vouloir retirer cette compétence ?')">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
+                                    <h6 class="text-muted">Aucune compétence attribuée</h6>
+                                    <p class="text-muted">Cet utilisateur n'a pas encore de compétences.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ajouter une compétence -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Ajouter une Compétence</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if allCompetences|length > 0 %}
+                                <form method="post" id="addCompetenceForm">
+                                    <div class="mb-3">
+                                        <label for="competence" class="form-label">Compétence</label>
+                                        <select class="form-select" name="competence" id="competence" required>
+                                            <option value="">Choisir une compétence...</option>
+                                            {% for competence in allCompetences %}
+                                                <option value="{{ competence.id }}" 
+                                                        data-description="{{ competence.description ?? '' }}">
+                                                    {{ competence.nom }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <div id="competenceDescription" class="form-text"></div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="niveau" class="form-label">Niveau</label>
+                                        <select class="form-select" name="niveau" id="niveau" required>
+                                            {% for value, label in niveaux %}
+                                                <option value="{{ value }}">{{ label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-plus"></i> Ajouter
+                                    </button>
+                                </form>
+
+                                <script>
+                                document.getElementById('competence').addEventListener('change', function() {
+                                    var selectedOption = this.options[this.selectedIndex];
+                                    var description = selectedOption.getAttribute('data-description');
+                                    var descDiv = document.getElementById('competenceDescription');
+                                    descDiv.textContent = description || '';
+                                });
+
+                                document.getElementById('addCompetenceForm').addEventListener('submit', function(e) {
+                                    e.preventDefault();
+                                    var competenceId = document.getElementById('competence').value;
+                                    var niveau = document.getElementById('niveau').value;
+                                    
+                                    if (competenceId && niveau) {
+                                        var form = document.createElement('form');
+                                        form.method = 'POST';
+                                        form.action = '{{ path('app_competences_add', {userId: user.id, competenceId: '__COMP_ID__'}) }}'.replace('__COMP_ID__', competenceId);
+                                        
+                                        var niveauInput = document.createElement('input');
+                                        niveauInput.type = 'hidden';
+                                        niveauInput.name = 'niveau';
+                                        niveauInput.value = niveau;
+                                        form.appendChild(niveauInput);
+                                        
+                                        document.body.appendChild(form);
+                                        form.submit();
+                                    }
+                                });
+                                </script>
+                            {% else %}
+                                <div class="text-center py-3">
+                                    <i class="fas fa-info-circle fa-2x text-info mb-2"></i>
+                                    <p class="text-muted mb-2">Aucune compétence disponible</p>
+                                    <a href="{{ path('app_competences_new') }}" class="btn btn-sm btn-success">
+                                        Créer une compétence
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Info utilisateur -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informations</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2"><strong>Email:</strong> {{ user.email }}</p>
+                            <p class="mb-2"><strong>Rôle:</strong> {{ user.roleOuvrier }}</p>
+                            {% if user.equipe %}
+                                <p class="mb-2"><strong>Équipe:</strong> {{ user.equipe.nomEquipe }}</p>
+                            {% endif %}
+                            <p class="mb-0"><strong>Compétences:</strong> {{ userCompetences|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
